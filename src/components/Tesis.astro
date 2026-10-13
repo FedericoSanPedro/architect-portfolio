@@ -1,0 +1,66 @@
+---
+import Gallery from './Gallery.astro';
+import { tesis } from '../data/site';
+---
+
+<article id="tesis" class="mx-auto max-w-6xl px-4 py-24 md:px-8">
+  <header class="reveal max-w-[680px]">
+    <p class="eyebrow">Tesis de grado · Barrio Los Tilos, Mar del Plata</p>
+    <h2 class="mt-3 text-3xl font-bold tracking-tight md:text-5xl">Centro de Investigación y Educación de Cultivos</h2>
+    <p class="mt-4 text-base text-muted md:text-lg">
+      Mi trabajo final de carrera en la FAUD: un master plan con corredor verde para el barrio y, en uno de sus nodos, un
+      edificio dedicado a investigar y enseñar sobre cultivos.
+    </p>
+  </header>
+
+  <button
+    type="button"
+    data-lb="tesis"
+    data-src={tesis.hero.src}
+    data-alt={tesis.hero.alt}
+    class="reveal mt-12 block w-full overflow-hidden rounded-2xl border border-line bg-surface p-2 transition-transform duration-700 ease-fluid hover:-translate-y-1 active:scale-[0.98]"
+  >
+    <img
+      src={tesis.hero.src}
+      alt={tesis.hero.alt}
+      width={tesis.hero.width}
+      height={tesis.hero.height}
+      loading="lazy"
+      decoding="async"
+      class="aspect-video w-full rounded-lg object-cover"
+    />
+  </button>
+
+  <ol class="mt-16 flex flex-col gap-16">
+    {
+      tesis.steps.map((step, i) => (
+        <li class="grid gap-6 md:grid-cols-3 md:gap-12">
+          <div class="reveal">
+            <p class="text-sm font-bold text-accent">0{i + 1}</p>
+            <h3 class="mt-2 text-2xl font-bold tracking-tight">{step.title}</h3>
+            <p class="mt-3 text-base text-muted">{step.body}</p>
+          </div>
+          {step.circles ? (
+            <ul class="reveal flex flex-wrap justify-center gap-4 self-center md:col-span-2">
+              {step.circles.map((c) => (
+                <li class="w-[calc((100%-2rem)/3)] overflow-hidden rounded-full sm:w-[calc((100%-4rem)/5)]">
+                  <img
+                    src={c.src}
+                    alt={c.alt}
+                    width={c.width}
+                    height={c.height}
+                    loading="lazy"
+                    decoding="async"
+                    class="aspect-square w-full scale-105 object-cover"
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <Gallery images={step.images} group="tesis" cols="sm:grid-cols-2" class="md:col-span-2" />
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</article>

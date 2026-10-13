@@ -1,0 +1,289 @@
+---
+import Icon from './Icon.astro';
+import { recorrido, site } from '../data/site';
+
+const segments = recorrido.stops.length - 1;
+---
+
+<section
+  id="inicio"
+  class="recorrido relative"
+  style={`--segments: ${segments}`}
+  data-fps={recorrido.fps}
+  data-frames-per-stop={recorrido.framesPerStop}
+  data-stops={JSON.stringify(recorrido.stops)}
+  aria-label="Recorrido por una vivienda diseñada por Daniela"
+>
+  <div class="sticky top-0 h-svh overflow-hidden bg-line">
+    <picture>
+      <source media="(max-width: 860px)" srcset="/video/recorrido-poster-mobile.webp" />
+      <img
+        src="/video/recorrido-poster.webp"
+        alt=""
+        class="rec-still absolute inset-0 size-full object-cover"
+        fetchpriority="high"
+      />
+    </picture>
+    <video
+      class="rec-video absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-700 ease-fluid"
+      muted
+      playsinline
+      preload="none"
+      aria-hidden="true"
+      tabindex="-1"></video>
+
+    <!-- Carga del video: barra fina con la forma real del progreso, sin spinner -->
+    <div class="rec-loader absolute inset-x-0 top-0 h-1 bg-white/40 transition-opacity duration-700 ease-fluid">
+      <div class="rec-loader-bar h-full origin-left scale-x-0 bg-accent"></div>
+    </div>
+
+    <!-- Parada 0: presentación -->
+    <div class="rec-panel rec-panel--hero" data-stop="0">
+      <p class="eyebrow">{site.role} · {site.city}</p>
+      <h1 class="text-hero mt-3 max-w-[680px] text-4xl font-bold tracking-tight md:text-6xl">
+        Diseño casas<br /> que se recorren<br /> con la luz
+      </h1>
+      <p class="mt-4 max-w-[680px] text-base text-muted md:text-lg">
+        Soy Daniela San Pedro. Proyecto viviendas y remodelaciones en Mar del Plata, y te muestro cada idea en
+        planos y renders antes de construirla.
+      </p>
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <a href="#contacto" class="btn btn-primary">
+          Contame tu proyecto <Icon name="arrow-right" class="size-4" />
+        </a>
+        <span class="text-sm text-muted">Arquitecta FAUD UNMdP, egresada en 2022</span>
+      </div>
+      <p class="rec-hint mt-6 flex items-center gap-2 text-sm font-semibold text-muted">
+        <Icon name="arrow-down" class="size-4" /> Bajá para recorrer la casa
+      </p>
+    </div>
+
+    {
+      recorrido.panels.map((p) => (
+        <div class="rec-panel" data-stop={p.stop}>
+          <p class="eyebrow">{p.eyebrow}</p>
+          <h2 class="mt-3 text-2xl font-bold tracking-tight md:text-3xl">{p.title}</h2>
+          <p class="mt-3 text-base text-muted">{p.body}</p>
+          {p.tags && (
+            <ul class="mt-4 flex flex-wrap gap-2">
+              {p.tags.map((t) => (
+                <li class="chip">{t}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ))
+    }
+
+    <!-- Última parada: invitación -->
+    <div class="rec-panel" data-stop={segments}>
+      <p class="eyebrow">Fin del recorrido</p>
+      <h2 class="mt-3 text-2xl font-bold tracking-tight md:text-3xl">¿Tenés un espacio para transformar?</h2>
+      <p class="mt-3 text-base text-muted">Contame qué necesitás y lo pensamos juntos, del primer croquis al último detalle.</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="#contacto" class="btn btn-primary">
+          Contame tu proyecto <Icon name="arrow-right" class="size-4" />
+        </a>
+        <a href="#proyectos" class="btn btn-ghost">Ver proyectos</a>
+      </div>
+    </div>
+
+    <!-- Indicador de paradas -->
+    <ol class="rec-dots absolute top-1/2 right-4 hidden -translate-y-1/2 flex-col gap-3 md:flex" aria-hidden="true">
+      {recorrido.stops.map(() => <li class="size-2 rounded-full bg-white/60 transition-all duration-700 ease-fluid" />)}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .recorrido {
+    /* 85 svh de scroll por tramo, más la pantalla fija */
+    height: calc(100vh + var(--segments) * 85vh);
+    height: calc(100svh + var(--segments) * 85svh);
+  }
+
+  .rec-panel {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid rgb(255 255 255 / 0.6);
+    background: rgb(251 250 247 / 0.86);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity, transform;
+  }
+  .rec-panel--hero {
+    opacity: 1;
+  }
+
+  @media (min-width: 861px) {
+    .rec-panel {
+      left: 48px;
+      right: auto;
+      top: 50%;
+      bottom: auto;
+      width: 448px;
+      padding: 32px;
+      transform: translateY(-50%);
+    }
+    .rec-panel--hero {
+      width: 640px;
+      padding: 40px;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .rec-panel--hero .rec-hint {
+      display: none;
+    }
+  }
+
+  .has-video .rec-video {
+    opacity: 1;
+  }
+  .is-loaded .rec-loader {
+    opacity: 0;
+  }
+  .rec-dots li.is-active {
+    background: var(--color-surface);
+    transform: scale(1.5);
+  }
+</style>
+
+<script>
+  const section = document.querySelector<HTMLElement>('.recorrido')!;
+  const video = section.querySelector<HTMLVideoElement>('.rec-video')!;
+  const still = section.querySelector<HTMLImageElement>('.rec-still')!;
+  const bar = section.querySelector<HTMLElement>('.rec-loader-bar')!;
+  const panels = [...section.querySelectorAll<HTMLElement>('.rec-panel')];
+  const dots = [...section.querySelectorAll<HTMLElement>('.rec-dots li')];
+  const stops: string[] = JSON.parse(section.dataset.stops!);
+  const fps = Number(section.dataset.fps);
+  const framesPerStop = Number(section.dataset.framesPerStop);
+  const segments = stops.length - 1;
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const coarse = matchMedia('(hover: none) and (pointer: coarse)').matches;
+  const isMobile = coarse || matchMedia('(max-width: 860px)').matches;
+
+  const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const smooth = (x: number) => {
+    x = clamp(x);
+    return x * x * (3 - 2 * x);
+  };
+  // La cámara frena en cada render (velocidad casi nula en las paradas)
+  const LINGER = 0.75;
+  const dwell = (f: number) => (1 - LINGER) * f + LINGER * smooth(f);
+
+  let ready = false;
+  let cur = 0;
+  let target = 0;
+  let active = -1;
+  let inView = true;
+  let lastStill = -1;
+
+  function progress() {
+    const rect = section.getBoundingClientRect();
+    const total = section.offsetHeight - window.innerHeight;
+    return clamp(-rect.top / total) * segments; // 0 … segments
+  }
+
+  function update() {
+    const P = progress();
+    const k = Math.min(Math.floor(P), segments - 1);
+    const frame = (k + dwell(P - k)) * framesPerStop;
+    target = frame / fps;
+
+    // Paneles: aparecen alrededor de su parada
+    for (const panel of panels) {
+      const s = Number(panel.dataset.stop);
+      let op: number;
+      if (s === 0) op = smooth(1 - P / 0.45);
+      else if (s === segments) op = smooth((P - (segments - 0.45)) / 0.3);
+      else op = smooth(1 - Math.abs(P - s) / 0.42);
+      panel.style.opacity = String(op);
+      panel.style.pointerEvents = op > 0.5 ? 'auto' : 'none';
+      const lift = reduce ? 0 : (s - P) * 24;
+      panel.style.translate = `0 ${lift.toFixed(1)}px`;
+    }
+
+    const near = Math.round(P);
+    if (near !== active) {
+      active = near;
+      dots.forEach((d, i) => d.classList.toggle('is-active', i === near));
+    }
+
+    // Sin video (movimiento reducido o carga fallida): render fijo de la parada más cercana
+    if (!ready && (reduce || section.classList.contains('no-video')) && near !== lastStill) {
+      lastStill = near;
+      still.src = stops[near];
+      still.closest('picture')?.querySelectorAll('source').forEach((s) => s.remove());
+    }
+  }
+
+  function tick() {
+    update();
+    if (ready && !video.seeking) {
+      cur += (target - cur) * 0.2;
+      const t = clamp(cur, 0, video.duration - 0.05);
+      if (Math.abs(video.currentTime - t) > (isMobile ? 0.03 : 0.01)) video.currentTime = t;
+    }
+    if (inView) requestAnimationFrame(tick);
+  }
+
+  new IntersectionObserver(([e]) => {
+    const was = inView;
+    inView = e.isIntersecting;
+    if (inView && !was) requestAnimationFrame(tick);
+  }).observe(section);
+
+  async function loadVideo() {
+    const url = isMobile ? '/video/recorrido-mobile.mp4' : '/video/recorrido.mp4';
+    try {
+      const res = await fetch(url);
+      if (!res.ok || !res.body) throw new Error(String(res.status));
+      const total = Number(res.headers.get('content-length')) || 0;
+      const reader = res.body.getReader();
+      const chunks: Uint8Array<ArrayBuffer>[] = [];
+      let received = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        received += value.length;
+        if (total) bar.style.transform = `scaleX(${received / total})`;
+      }
+      video.src = URL.createObjectURL(new Blob(chunks, { type: 'video/mp4' }));
+      // Mostrar el video recién cuando pintó un cuadro real (en iOS puede quedar en blanco)
+      video.addEventListener('seeked', () => section.classList.add('has-video'), { once: true });
+      video.addEventListener('loadedmetadata', () => {
+        ready = true;
+        section.classList.add('is-loaded');
+        cur = target;
+        // Primera búsqueda forzada: si el cuadro pedido es el 0 no habría ningún "seeked"
+        video.currentTime = Math.max(0.001, target);
+      });
+      video.load();
+    } catch {
+      section.classList.add('no-video', 'is-loaded');
+    }
+  }
+
+  // iOS necesita un gesto del usuario para decodificar un video silenciado
+  const prime = () => {
+    video.play().then(() => video.pause()).catch(() => {});
+  };
+  if (isMobile) {
+    addEventListener('touchstart', prime, { once: true, passive: true });
+    addEventListener('pointerdown', prime, { once: true, passive: true });
+  }
+
+  if (reduce) section.classList.add('is-loaded');
+  else loadVideo();
+  requestAnimationFrame(tick);
+</script>

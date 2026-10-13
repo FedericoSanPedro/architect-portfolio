@@ -1,0 +1,17 @@
+---
+import Gallery from './Gallery.astro';
+import { diseno4 } from '../data/site';
+---
+
+<article id="diseno-4" class="mx-auto max-w-6xl px-4 py-24 md:px-8">
+  <header class="reveal max-w-[680px]">
+    <p class="eyebrow">Trabajo final · Diseño 4, FAUD</p>
+    <h2 class="mt-3 text-3xl font-bold tracking-tight md:text-5xl">Terrazas escalonadas frente al mar</h2>
+    <p class="mt-4 text-base text-muted md:text-lg">
+      Un edificio que se hunde en el desnivel del terreno: frentes vidriados, rampas y terrazas verdes contenidas por muros
+      de piedra, con un parque abierto hacia la costa.
+    </p>
+  </header>
+
+  <Gallery images={diseno4.images} group="diseno4" variant="feature" class="mt-12" />
+</article>

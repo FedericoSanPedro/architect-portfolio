@@ -1,5 +1,5 @@
 {
-  "name": "red-rotation",
+  "name": "architect-portfolio",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -12,6 +12,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.3.8"
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@phosphor-icons/core": "^2.1.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.8",
+    "tailwindcss": "^4.3.3"
   }
 }

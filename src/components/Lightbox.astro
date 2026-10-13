@@ -1,0 +1,79 @@
+---
+import Icon from './Icon.astro';
+---
+
+<dialog
+  id="lightbox"
+  class="m-0 size-full max-h-none max-w-none bg-transparent p-0 backdrop:bg-black/90 backdrop:backdrop-blur-sm"
+  aria-label="Visor de imágenes"
+>
+  <div class="flex size-full flex-col">
+    <div class="flex items-center justify-between gap-4 p-4 text-white">
+      <p class="lb-count text-sm font-semibold text-white/70"></p>
+      <button type="button" class="lb-close btn bg-white/10 text-white hover:bg-white/20" autofocus>
+        <Icon name="x" class="size-5" /> Cerrar
+      </button>
+    </div>
+    <figure class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-4 pb-4 md:px-16">
+      <img class="lb-img min-h-0 w-full flex-1 object-contain" alt="" />
+      <figcaption class="lb-caption max-w-[680px] text-center text-sm text-white/80"></figcaption>
+      <button
+        type="button"
+        class="lb-prev absolute top-1/2 left-2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur transition-colors duration-700 ease-fluid hover:bg-black/80 md:left-4"
+      >
+        <Icon name="caret-left" class="size-6" /><span class="sr-only">Imagen anterior</span>
+      </button>
+      <button
+        type="button"
+        class="lb-next absolute top-1/2 right-2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur transition-colors duration-700 ease-fluid hover:bg-black/80 md:right-4"
+      >
+        <Icon name="caret-right" class="size-6" /><span class="sr-only">Imagen siguiente</span>
+      </button>
+    </figure>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.getElementById('lightbox') as HTMLDialogElement;
+  const img = dialog.querySelector<HTMLImageElement>('.lb-img')!;
+  const caption = dialog.querySelector<HTMLElement>('.lb-caption')!;
+  const count = dialog.querySelector<HTMLElement>('.lb-count')!;
+  let items: HTMLElement[] = [];
+  let index = 0;
+
+  function show(i: number) {
+    index = (i + items.length) % items.length;
+    const it = items[index];
+    img.src = it.dataset.src!;
+    img.alt = it.dataset.alt!;
+    caption.textContent = it.dataset.alt!;
+    count.textContent = `${index + 1} de ${items.length}`;
+  }
+
+  document.addEventListener('click', (e) => {
+    const trigger = (e.target as HTMLElement).closest<HTMLElement>('[data-lb]');
+    if (!trigger) return;
+    items = [...document.querySelectorAll<HTMLElement>(`[data-lb="${trigger.dataset.lb}"]`)];
+    show(items.indexOf(trigger));
+    dialog.showModal();
+  });
+
+  dialog.querySelector('.lb-close')!.addEventListener('click', () => dialog.close());
+  dialog.querySelector('.lb-prev')!.addEventListener('click', () => show(index - 1));
+  dialog.querySelector('.lb-next')!.addEventListener('click', () => show(index + 1));
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') show(index - 1);
+    if (e.key === 'ArrowRight') show(index + 1);
+  });
+
+  // Deslizar con el dedo
+  let startX = 0;
+  dialog.addEventListener('touchstart', (e) => (startX = e.touches[0].clientX), { passive: true });
+  dialog.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 48) show(index + (dx < 0 ? 1 : -1));
+  });
+</script>

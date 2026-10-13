@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /* Paleta: hormigón cálido de los renders + verde oliva de jardines y huertas */
+  --color-bg: #f3f0ea;
+  --color-surface: #fbfaf7;
+  --color-ink: #1b1a17;
+  --color-muted: #66625a;
+  --color-line: #dcd6cb;
+  --color-accent: #4f5d3f;
+  --color-accent-hover: #3f4b32;
+  --color-on-accent: #f7f5f0;
+
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  figcaption {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  /* Título del hero: el único degradado permitido, solo en texto */
+  .text-hero {
+    background: linear-gradient(90deg, #000000, #666666);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Botones */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 9999px;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+    transition:
+      transform 700ms var(--ease-fluid),
+      background-color 700ms var(--ease-fluid),
+      color 700ms var(--ease-fluid),
+      border-color 700ms var(--ease-fluid);
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+  .btn:active {
+    transform: translateY(1px) scale(0.98);
+  }
+  .btn-primary {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  .btn-primary:hover {
+    background: var(--color-accent-hover);
+  }
+  .btn-ghost {
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    color: var(--color-ink);
+  }
+  .btn-ghost:hover {
+    border-color: var(--color-muted);
+  }
+  .btn-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  /* Revelado al entrar en pantalla (IntersectionObserver en Layout) */
+  .reveal {
+    opacity: 0;
+    transform: translateY(4rem);
+    filter: blur(12px);
+    transition:
+      opacity 900ms var(--ease-fluid),
+      transform 900ms var(--ease-fluid),
+      filter 900ms var(--ease-fluid);
+  }
+  .reveal.is-in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      filter: none;
+      transition: none;
+    }
+  }
+
+  /* Etiquetas de herramientas */
+  .chip {
+    display: inline-flex;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    color: var(--color-muted);
+  }
+
+  .eyebrow {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+}

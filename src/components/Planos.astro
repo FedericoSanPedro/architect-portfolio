@@ -1,0 +1,23 @@
+---
+import Gallery from './Gallery.astro';
+import { planos } from '../data/site';
+
+const [fachada, plantaBaja, plantaAlta, corteAA, corteBB, corteCC, techos] = planos.images;
+---
+
+<article id="vivienda" class="mx-auto max-w-6xl px-4 py-24 md:px-8">
+  <header class="reveal max-w-[680px]">
+    <p class="eyebrow">Planos de arquitectura · Vivienda en Mar del Plata</p>
+    <h2 class="mt-3 text-3xl font-bold tracking-tight md:text-5xl">Una vivienda de dos plantas, documentada completa</h2>
+    <p class="mt-4 text-base text-muted md:text-lg">
+      Plantas, cortes, techos y fachada con cotas, niveles y especificación de materiales: teja francesa, ladrillo visto,
+      piedra y carpinterías de madera. Abrí cualquier plano para verlo en detalle.
+    </p>
+  </header>
+
+  <div class="mt-12 flex flex-col gap-4">
+    <Gallery images={[fachada]} group="planos" contain aspect="aspect-[16/9]" cols="" />
+    <Gallery images={[plantaBaja, plantaAlta, techos]} group="planos" contain aspect="aspect-[3/5]" cols="grid-cols-2 lg:grid-cols-3" />
+    <Gallery images={[corteAA, corteBB, corteCC]} group="planos" contain aspect="aspect-[3/2]" />
+  </div>
+</article>

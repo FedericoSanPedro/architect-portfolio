@@ -1,0 +1,133 @@
+---
+import { site } from '../data/site';
+
+const links = [
+  { href: '/#inicio', id: 'inicio', label: 'Recorrido' },
+  { href: '/#proyectos', id: 'proyectos', label: 'Proyectos' },
+  { href: '/#sobre-mi', id: 'sobre-mi', label: 'Sobre mí' },
+];
+---
+
+<header class="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-4">
+  <nav
+    aria-label="Principal"
+    class="pointer-events-auto mt-4 flex w-full max-w-max items-center gap-2 rounded-full border border-white/60 bg-white/70 p-1 pl-4 shadow-sm backdrop-blur-xl md:mt-6"
+  >
+    <a href="/#inicio" class="mr-2 text-sm font-bold tracking-tight whitespace-nowrap">
+      {site.name}
+    </a>
+
+    <ul class="hidden items-center gap-1 md:flex">
+      {
+        links.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              data-nav={l.id}
+              class="nav-link rounded-full px-3 py-2 text-sm font-semibold text-muted transition-colors duration-700 ease-fluid hover:text-ink"
+            >
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <a href="/#contacto" class="btn btn-primary btn-sm hidden md:inline-flex">Contacto</a>
+
+    <button
+      type="button"
+      id="menu-toggle"
+      class="relative ml-auto size-10 rounded-full transition-transform duration-700 ease-fluid active:scale-[0.98] md:hidden"
+      aria-expanded="false"
+      aria-controls="menu-overlay"
+    >
+      <span class="sr-only">Abrir menú</span>
+      <span class="menu-line-a absolute top-4 left-3 h-0.5 w-4 rounded-full bg-ink transition-transform duration-700 ease-fluid"></span>
+      <span class="menu-line-b absolute top-6 left-3 h-0.5 w-4 rounded-full bg-ink transition-transform duration-700 ease-fluid"></span>
+    </button>
+  </nav>
+</header>
+
+<div
+  id="menu-overlay"
+  class="invisible fixed inset-0 z-40 flex flex-col justify-center bg-white/80 px-6 opacity-0 backdrop-blur-3xl transition-all duration-700 ease-fluid md:hidden"
+>
+  <ul class="flex flex-col gap-4">
+    {
+      [...links, { href: '/#contacto', id: 'contacto', label: 'Contacto' }].map((l, i) => (
+        <li class="overflow-hidden">
+          <a
+            href={l.href}
+            data-nav={l.id}
+            class="menu-item nav-link block translate-y-12 text-4xl font-bold opacity-0 transition-all duration-700 ease-fluid"
+            style={`transition-delay: ${100 + i * 50}ms`}
+          >
+            {l.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  #menu-toggle[aria-expanded='true'] .menu-line-a {
+    transform: translateY(4px) rotate(45deg);
+  }
+  #menu-toggle[aria-expanded='true'] .menu-line-b {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+  /* .menu-open vive en <html>, fuera del alcance de los estilos del componente */
+  :global(.menu-open) #menu-overlay {
+    visibility: visible;
+    opacity: 1;
+  }
+  :global(.menu-open) .menu-item {
+    translate: none;
+    opacity: 1;
+  }
+  .nav-link[aria-current='true'] {
+    color: var(--color-ink);
+    background: var(--color-surface);
+  }
+  #menu-overlay .nav-link[aria-current='true'] {
+    background: none;
+    color: var(--color-accent);
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('menu-toggle')!;
+  const label = toggle.querySelector('.sr-only')!;
+
+  function setOpen(open: boolean) {
+    document.documentElement.classList.toggle('menu-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    label.textContent = open ? 'Cerrar menú' : 'Abrir menú';
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  document.querySelectorAll('#menu-overlay a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setOpen(false);
+  });
+
+  // Marca en el menú la sección visible
+  const navLinks = document.querySelectorAll<HTMLAnchorElement>('[data-nav]');
+  const sections = ['inicio', 'proyectos', 'sobre-mi', 'contacto']
+    .map((id) => document.getElementById(id))
+    .filter((s): s is HTMLElement => !!s);
+
+  const spy = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        navLinks.forEach((l) => l.setAttribute('aria-current', String(l.dataset.nav === e.target.id)));
+      }
+    },
+    { rootMargin: '-45% 0px -50% 0px' },
+  );
+  sections.forEach((s) => spy.observe(s));
+</script>

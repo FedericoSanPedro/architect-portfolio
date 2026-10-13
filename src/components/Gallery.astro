@@ -1,0 +1,62 @@
+---
+import Icon from './Icon.astro';
+import type { Photo } from '../data/site';
+
+interface Props {
+  images: Photo[];
+  group: string;
+  /** "feature": la primera imagen ocupa dos columnas */
+  variant?: 'grid' | 'feature';
+  /** Para planos: fondo claro y la imagen entera, sin recortar */
+  contain?: boolean;
+  /** Proporción de cada tarjeta (clase de Tailwind) */
+  aspect?: string;
+  /** Columnas de la grilla (clases de Tailwind) */
+  cols?: string;
+  class?: string;
+}
+
+const {
+  images,
+  group,
+  variant = 'grid',
+  contain = false,
+  aspect = 'aspect-[4/3]',
+  cols = 'sm:grid-cols-2 lg:grid-cols-3',
+  class: className = '',
+} = Astro.props;
+---
+
+<ul class:list={['grid gap-4', cols, className]}>
+  {
+    images.map((img, i) => (
+      <li class:list={['reveal', variant === 'feature' && i === 0 && 'sm:col-span-2 lg:row-span-2']}>
+        <button
+          type="button"
+          data-lb={group}
+          data-src={img.src}
+          data-alt={img.alt}
+          class="group relative block size-full overflow-hidden rounded-2xl border border-line bg-surface p-2 text-left transition-transform duration-700 ease-fluid hover:-translate-y-1 active:scale-[0.98]"
+        >
+          <img
+            src={img.src}
+            alt={img.alt}
+            width={img.width}
+            height={img.height}
+            loading="lazy"
+            decoding="async"
+            class:list={[
+              'size-full rounded-lg transition-transform duration-700 ease-fluid group-hover:scale-[1.02]',
+              contain ? 'bg-white object-contain p-2' : 'object-cover',
+              variant === 'feature' && i === 0 ? `${aspect} lg:aspect-auto` : aspect,
+            ]}
+          />
+          <span class="absolute right-4 bottom-4 flex size-8 items-center justify-center rounded-full bg-white/80 opacity-0 backdrop-blur transition-opacity duration-700 ease-fluid group-hover:opacity-100 group-focus-visible:opacity-100">
+            <Icon name="arrows-out" class="size-4" />
+            <span class="sr-only">Ampliar imagen</span>
+          </span>
+        </button>
+      </li>
+    ))
+  }
+</ul>

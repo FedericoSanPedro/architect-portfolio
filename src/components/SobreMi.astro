@@ -1,0 +1,58 @@
+---
+import Icon from './Icon.astro';
+import { sobreMi } from '../data/site';
+---
+
+<section id="sobre-mi" class="mx-auto max-w-6xl px-4 py-24 md:px-8">
+  <div class="grid items-center gap-12 md:grid-cols-5">
+    <figure class="reveal rounded-2xl border border-line bg-surface p-2 md:col-span-2">
+      <img
+        src={sobreMi.portrait.src}
+        alt={sobreMi.portrait.alt}
+        width={sobreMi.portrait.width}
+        height={sobreMi.portrait.height}
+        loading="lazy"
+        decoding="async"
+        class="aspect-[4/5] w-full rounded-lg object-cover"
+      />
+    </figure>
+
+    <div class="reveal md:col-span-3">
+      <p class="eyebrow">Sobre mí</p>
+      <h2 class="mt-3 text-3xl font-bold tracking-tight md:text-5xl">Hola, soy Daniela</h2>
+      <div class="mt-4 flex flex-col gap-4 text-base text-muted md:text-lg">
+        <p>
+          Soy arquitecta, nacida y formada en Mar del Plata. Me recibí en la Facultad de Arquitectura, Urbanismo y Diseño de
+          la Universidad Nacional de Mar del Plata en diciembre de 2022.
+        </p>
+        <p>
+          Disfruto el proceso completo: entender qué necesita cada persona, resolverlo en planos y mostrarlo en renders para
+          decidir juntos antes de construir. Trabajo bien en equipo y tengo muchos años de experiencia en atención al
+          público, algo que se nota en el trato con cada cliente.
+        </p>
+      </div>
+
+      <dl class="mt-8 grid gap-6 sm:grid-cols-2">
+        <div class="rounded-2xl border border-line bg-surface p-6">
+          <dt class="flex items-center gap-2 text-sm font-semibold text-muted">
+            <Icon name="graduation-cap" class="size-5 text-accent" /> Formación
+          </dt>
+          <dd class="mt-2 text-base font-semibold">Arquitectura, FAUD UNMdP</dd>
+          <dd class="text-sm text-muted">Egresada el 15 de diciembre de 2022</dd>
+        </div>
+        <div class="rounded-2xl border border-line bg-surface p-6">
+          <dt class="flex items-center gap-2 text-sm font-semibold text-muted">
+            <Icon name="map-pin" class="size-5 text-accent" /> Base
+          </dt>
+          <dd class="mt-2 text-base font-semibold">Mar del Plata, Buenos Aires</dd>
+          <dd class="text-sm text-muted">Movilidad propia para visitar obras</dd>
+        </div>
+      </dl>
+
+      <h3 class="mt-8 text-sm font-semibold text-muted">Herramientas</h3>
+      <ul class="mt-3 flex flex-wrap gap-2">
+        {sobreMi.tools.map((t) => <li class="chip">{t}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>

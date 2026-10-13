@@ -1,0 +1,14 @@
+---
+import { site } from '../data/site';
+---
+
+<footer class="border-t border-line px-4 py-8 md:px-8">
+  <div class="mx-auto flex max-w-6xl flex-col gap-4 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+    <p>© 2026 {site.name} · {site.role} en {site.city}</p>
+    <ul class="flex flex-wrap gap-4">
+      <li><a href="/#proyectos" class="transition-colors duration-700 ease-fluid hover:text-ink">Proyectos</a></li>
+      <li><a href="/#sobre-mi" class="transition-colors duration-700 ease-fluid hover:text-ink">Sobre mí</a></li>
+      <li><a href={`mailto:${site.email}`} class="transition-colors duration-700 ease-fluid hover:text-ink">Email</a></li>
+    </ul>
+  </div>
+</footer>

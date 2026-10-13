@@ -1,0 +1,102 @@
+---
+import { remodelacion } from '../data/site';
+---
+
+<article id="remodelacion" class="mx-auto max-w-6xl px-4 py-24 md:px-8">
+  <header class="reveal max-w-[680px]">
+    <p class="eyebrow">Remodelación · Departamento en Mar del Plata</p>
+    <h2 class="mt-3 text-3xl font-bold tracking-tight md:text-5xl">Más mesada, más guardado y más luz en la misma cocina</h2>
+    <p class="mt-4 text-base text-muted md:text-lg">
+      La cocina original tenía un solo espacio de mesada de 60 por 60 cm. Aproveché la instalación de agua existente para
+      invertir la pileta y el lavarropas, y así la mesada pasa por encima del lavarropas y gana superficie de trabajo. Los
+      muebles blancos y los azulejos subway hacen que el ambiente se sienta más luminoso y amplio.
+    </p>
+  </header>
+
+  <div class="mt-12 grid gap-6 md:grid-cols-3">
+    {
+      remodelacion.pairs.map((pair) => (
+        <figure class="ba-card reveal rounded-2xl border border-line bg-surface p-2">
+          <div class="relative aspect-[3/4] overflow-hidden rounded-lg bg-line">
+            <img
+              src={pair.before.src}
+              alt={pair.before.alt}
+              width={pair.before.width}
+              height={pair.before.height}
+              loading="lazy"
+              decoding="async"
+              class="absolute inset-0 size-full object-cover"
+            />
+            <img
+              src={pair.after.src}
+              alt={pair.after.alt}
+              width={pair.after.width}
+              height={pair.after.height}
+              loading="lazy"
+              decoding="async"
+              class="ba-after absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-[1500ms] ease-fluid"
+            />
+            <span class="ba-tag absolute top-3 left-3 rounded-full bg-white/80 px-3 py-1 text-xs font-bold backdrop-blur">
+              Antes
+            </span>
+          </div>
+          <figcaption class="flex items-center justify-between gap-2 px-2 pt-3 pb-1 text-sm">
+            <span class="font-semibold">{pair.label}</span>
+            <span class="flex items-center gap-1" aria-hidden="true">
+              <span class="ba-dot-before h-1 w-4 rounded-full bg-ink transition-colors duration-700 ease-fluid" />
+              <span class="ba-dot-after h-1 w-4 rounded-full bg-line transition-colors duration-700 ease-fluid" />
+            </span>
+          </figcaption>
+        </figure>
+      ))
+    }
+    <figure class="reveal rounded-2xl border border-line bg-surface p-2">
+      <img
+        src={remodelacion.result.src}
+        alt={remodelacion.result.alt}
+        width={remodelacion.result.width}
+        height={remodelacion.result.height}
+        loading="lazy"
+        decoding="async"
+        class="aspect-[3/4] w-full rounded-lg object-cover"
+      />
+      <figcaption class="px-2 pt-3 pb-1 text-sm font-semibold">Resultado final</figcaption>
+    </figure>
+  </div>
+</article>
+
+<script>
+  // Cada par alterna solo entre antes y después cada 3,5 s, con fundido de 1,5 s.
+  // Los pares van desfasados y solo se animan mientras se ven en pantalla.
+  const INTERVAL = 3500;
+  const cards = [...document.querySelectorAll<HTMLElement>('.ba-card')];
+
+  function setAfter(card: HTMLElement, after: boolean) {
+    card.dataset.after = String(after);
+    card.querySelector<HTMLElement>('.ba-after')!.style.opacity = after ? '1' : '0';
+    card.querySelector('.ba-tag')!.textContent = after ? 'Después' : 'Antes';
+    card.querySelector('.ba-dot-before')!.classList.toggle('bg-ink', !after);
+    card.querySelector('.ba-dot-before')!.classList.toggle('bg-line', after);
+    card.querySelector('.ba-dot-after')!.classList.toggle('bg-ink', after);
+    card.querySelector('.ba-dot-after')!.classList.toggle('bg-line', !after);
+  }
+
+  cards.forEach((card, i) => {
+    let timer: number | undefined;
+    let delay: number | undefined;
+    const stop = () => {
+      clearTimeout(delay);
+      clearInterval(timer);
+    };
+    new IntersectionObserver(([e]) => {
+      stop();
+      if (!e.isIntersecting) return;
+      // Arranca mostrando el antes; el segundo par espera medio ciclo más
+      setAfter(card, false);
+      delay = window.setTimeout(() => {
+        setAfter(card, true);
+        timer = window.setInterval(() => setAfter(card, card.dataset.after !== 'true'), INTERVAL);
+      }, INTERVAL / 2 + i * (INTERVAL / 2));
+    }, { threshold: 0.4 }).observe(card);
+  });
+</script>

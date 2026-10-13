@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Layout title="Página no encontrada · Daniela San Pedro" noindex>
+  <section class="relative flex min-h-svh items-center overflow-hidden px-4">
+    <img
+      src="/photos/vis_9.webp"
+      alt=""
+      class="absolute inset-0 size-full object-cover opacity-25"
+    />
+    <div class="relative mx-auto w-full max-w-[680px] rounded-2xl border border-white/60 bg-surface/85 p-8 backdrop-blur-xl md:p-12">
+      <p class="eyebrow">Error 404</p>
+      <h1 class="text-hero mt-3 text-4xl font-bold tracking-tight md:text-5xl">Esta habitación todavía no existe</h1>
+      <p class="mt-4 text-base text-muted">La página que buscás no está en el plano. Volvé al inicio para seguir el recorrido.</p>
+      <a href="/" class="btn btn-primary mt-6">
+        Volver al inicio <Icon name="arrow-right" class="size-4" />
+      </a>
+    </div>
+  </section>
+</Layout>

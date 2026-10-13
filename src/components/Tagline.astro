@@ -1,0 +1,56 @@
+---
+const text =
+  'Cada proyecto empieza escuchando cómo vivís, y termina en un espacio pensado para que la luz y lo cotidiano se encuentren.';
+const words = text.split(' ');
+---
+
+<section class="tagline px-4 py-24 md:py-24" aria-label={text}>
+  <p class="mx-auto max-w-[680px] text-4xl font-bold tracking-tight md:text-5xl" aria-hidden="true">
+    {
+      words.map((w) => (
+        <>
+          <span class="tl-word">{w}</span>{' '}
+        </>
+      ))
+    }
+  </p>
+</section>
+
+<style>
+  .tl-word {
+    color: rgb(27 26 23 / 0.28);
+    transition: color 700ms var(--ease-fluid);
+  }
+  .tl-word.is-on {
+    color: var(--color-ink);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tl-word {
+      color: var(--color-ink);
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const section = document.querySelector<HTMLElement>('.tagline')!;
+  const para = section.querySelector<HTMLElement>('p')!;
+  const words = [...section.querySelectorAll<HTMLElement>('.tl-word')];
+  let running = false;
+
+  // A medida que el párrafo cruza el 65% de la pantalla, las palabras se encienden de a una
+  function tick() {
+    const rect = para.getBoundingClientRect();
+    const line = window.innerHeight * 0.65;
+    const p = Math.min(1, Math.max(0, (line - rect.top) / rect.height));
+    const count = Math.round(p * words.length);
+    words.forEach((w, i) => w.classList.toggle('is-on', i < count));
+    if (running) requestAnimationFrame(tick);
+  }
+
+  new IntersectionObserver(([e]) => {
+    const was = running;
+    running = e.isIntersecting;
+    if (running && !was) requestAnimationFrame(tick);
+  }).observe(section);
+</script>

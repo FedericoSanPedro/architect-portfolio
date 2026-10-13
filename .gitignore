@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # raw AI video clips (final encoded video lives in public/)
 video-src/
+
+# documentos privados (CV con datos personales)
+recursos/
